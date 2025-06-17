@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Daftar Akun Terdaftar - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gradient-to-br from-purple-50 to-indigo-50 min-h-screen text-gray-800">
+    
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center px-8 py-6 bg-white shadow-md">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-10 h-10 rounded-full" />
+        <h1 class="font-bold text-2xl text-purple-700">SMARTIN-AD</h1>
+      </div>
+      <div class="space-x-6 text-gray-700 font-medium">
+        <a href="{{ url_for('dashboard_admin') }}" class="hover:text-purple-600">Dashboard Admin</a>
+        <a href="{{ url_for('logout') }}" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600">Logout</a>
+      </div>
+    </nav>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="max-w-3xl mx-auto mt-6">
+      {% for category, message in messages %}
+      <div class="p-4 mb-4 rounded-md shadow
+        {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700
+        {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700
+        {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700
+        {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700
+        {% endif %}">
+        <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+        <p>{{ message }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Hero -->
+    <div class="max-w-4xl mx-auto mt-10 text-center">
+      <h2 class="text-3xl font-bold text-purple-800 mb-2">Daftar Akun Terdaftar</h2>
+      <p class="text-gray-600">Berikut adalah seluruh akun yang telah terdaftar dalam sistem SMARTIN.</p>
+    </div>
+
+    <!-- Tabel Data -->
+    <div class="max-w-5xl mx-auto mt-8 bg-white shadow-lg rounded-xl p-6 overflow-x-auto">
+      <table class="min-w-full text-sm text-left border border-gray-200">
+        <thead class="bg-purple-100 text-purple-800 font-semibold">
+          <tr>
+            <th class="px-4 py-3 border border-gray-200">ID</th>
+            <th class="px-4 py-3 border border-gray-200">Nama</th>
+            <th class="px-4 py-3 border border-gray-200">Email</th>
+            <th class="px-4 py-3 border border-gray-200">Role</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white text-gray-700">
+          {% for u in users %}
+          <tr class="hover:bg-gray-50 transition">
+            <td class="px-4 py-3 border border-gray-200">{{ u['user_id'] }}</td>
+            <td class="px-4 py-3 border border-gray-200">{{ u['nama'] }}</td>
+            <td class="px-4 py-3 border border-gray-200">{{ u['email'] }}</td>
+            <td class="px-4 py-3 border border-gray-200 flex items-center gap-2">
+              {% if u['role'] == 'admin' %}
+              <span class="inline-flex items-center px-2 py-1 bg-red-100 text-red-600 text-xs font-medium rounded-full">Admin</span>
+              {% elif u['role'] == 'guru' %}
+              <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">Guru</span>
+              {% elif u['role'] == 'siswa' %}
+              <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded-full">Siswa</span>
+              {% else %}
+              <span class="text-gray-500">-</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-10 text-center text-gray-500 text-sm py-6">
+      Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)
+    </footer>
+
+  </body>
+</html>

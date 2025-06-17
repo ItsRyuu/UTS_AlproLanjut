@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Profil Siswa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap & Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .profil-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        color: #333;
+      }
+
+      .judul-section {
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.5px;
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .btn-save {
+        background-color: #4f46e5;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: 0.2s;
+      }
+
+      .btn-save:hover {
+        background-color: #4338ca;
+      }
+
+      .btn-back {
+        color: #6b7280;
+        font-size: 0.9rem;
+        text-decoration: none;
+      }
+
+      .btn-back:hover {
+        color: #374151;
+      }
+
+      footer {
+        background-color: #f1f5f9;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar siswa -->
+    {% include '_navbar_siswa.html' %}
+
+    <div class="container mt-5 mb-5">
+      <h2 class="text-center judul-section">PROFIL SISWA</h2>
+
+      <!-- Flash Message -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST">
+        <div class="profil-card mb-4">
+          <h4 class="judul-section">Informasi Profil</h4>
+
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama</label>
+            <input type="text" id="nama" name="nama_baru" class="form-control" value="{{ profile['nama'] }}" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control bg-light" value="{{ profile['email'] }}" disabled />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">NIS</label>
+            <input type="text" class="form-control bg-light" value="{{ profile['nis'] or 'Belum diisi' }}" disabled />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Kelas</label>
+            <input type="text" class="form-control bg-light" value="{{ profile['kelas'] or 'Belum diisi' }}" disabled />
+          </div>
+
+          <!-- Tombol Simpan Nama -->
+          <div class="text-end">
+            <button type="submit" name="edit_nama" class="btn-save inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Simpan Nama</button>
+          </div>
+        </div>
+      </form>
+
+      <form method="POST">
+        <!-- Ubah Password -->
+        <div class="profil-card mb-4">
+          <h4 class="judul-section">Ubah Password</h4>
+          <div class="mb-3">
+            <input type="password" name="password_lama" class="form-control" placeholder="Password lama" required />
+          </div>
+          <div class="mb-3">
+            <input type="password" name="password_baru" class="form-control" placeholder="Password baru" required />
+          </div>
+          <div class="mb-3">
+            <input type="password" name="konfirmasi" class="form-control" placeholder="Konfirmasi password" required />
+          </div>
+
+          <!-- Tombol Simpan Password -->
+          <div class="text-end">
+            <button type="submit" name="ubah_password" class="btn-save inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Ubah Password</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-4 text-sm">
+      Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)
+    </footer>
+  </body>
+</html>

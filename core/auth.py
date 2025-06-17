@@ -1,8 +1,46 @@
+#core/auth.py
 import sqlite3
 from db.conn import get_connection
 import core.state
 
 current_user = None
+
+# core/auth.py
+from flask import session, redirect, url_for, flash
+from functools import wraps
+
+
+def login_required(role=None):
+    """
+    Decorator untuk memastikan user sudah login dan (opsional) memiliki role tertentu.
+    Usage:
+        @login_required()
+        def view(): ...
+
+        @login_required(role='guru')
+        def guru_view(): ...
+    """
+    def decorator(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            user = session.get('user')
+            if not user:
+                flash('Silakan login terlebih dahulu', 'warning')
+                return redirect(url_for('login'))
+            if role and user.get('role') != role:
+                flash('Anda tidak memiliki akses untuk halaman ini', 'danger')
+                return redirect(url_for('home'))
+            return f(*args, **kwargs)
+        return wrapped
+    return decorator
+
+
+def logout_user():
+    """
+    Fungsi untuk logout user di session.
+    """
+    session.pop('user', None)
+
 
 def register_user(name, email, password, role):
     conn = get_connection()
@@ -87,7 +125,6 @@ def edit_profile(new_name, new_password=None):
         conn.close()
 
 
-def logout_user():
     if core.state.current_user:
         print(f"\nLogout berhasil. Sampai jumpa {core.state.current_user['nama']}!")
         core.state.current_user = None

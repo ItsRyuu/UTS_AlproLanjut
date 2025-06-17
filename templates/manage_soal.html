@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kelola Soal | SMARTIN-AD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white font-sans text-gray-800">
+    {% include '_navbar_guru.html' %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container mx-auto mt-4 px-6">
+          {% for category, message in messages %}
+          <div class="bg-{{ 'green' if category == 'success' else 'red' }}-100 border border-{{ 'green' if category == 'success' else 'red' }}-400 text-{{ 'green' if category == 'success' else 'red' }}-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Content -->
+    <main class="container mx-auto px-6 py-10">
+      <h1 class="text-3xl font-bold text-center mb-6">Kelola Soal</h1>
+
+      <div class="text-right mb-4">
+        <a href="{{ url_for('guru.create_soal') }}" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+          Buat Soal Baru
+        </a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full table-auto border-collapse shadow-sm border border-gray-200">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="border border-gray-200 px-4 py-2 text-center">ID</th>
+              <th class="border border-gray-200 px-4 py-2 text-left">Pertanyaan</th>
+              <th class="border border-gray-200 px-4 py-2 text-left">Materi</th>
+              <th class="border border-gray-200 px-4 py-2 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for soal in soal_list %}
+            <tr class="hover:bg-gray-50">
+              <td class="border border-gray-200 px-4 py-2 text-center">{{ soal.soal_id }}</td>
+              <td class="border border-gray-200 px-4 py-2">{{ soal.pertanyaan[:80] }}...</td>
+              <td class="border border-gray-200 px-4 py-2">{{ soal.materi_judul }}</td>
+              <td class="border border-gray-200 px-4 py-2 text-center space-x-2">
+                <a href="{{ url_for('guru.edit_soal_view', soal_id=soal.soal_id) }}"
+                  class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500">Edit</a>
+                <form action="{{ url_for('guru.delete_soal', soal_id=soal.soal_id) }}" method="post" class="inline-block">
+                  <button type="submit" onclick="return confirm('Hapus soal?')"
+                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Hapus</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="text-center py-4 text-gray-500">Belum ada soal.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center mt-6">
+        <a href="{{ url_for('guru.dashboard_guru_view') }}" class="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">
+          Kembali
+        </a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">
+      Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)
+    </footer>
+  </body>
+</html>

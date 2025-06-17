@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Riwayat Aktivitas Siswa - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/a2e0a1c6e8.js" crossorigin="anonymous"></script>
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .navbar {
+        margin-bottom: 30px;
+      }
+      .header-section {
+        background-color: #7019b8;
+        color: white;
+        border-radius: 6px;
+        padding: 15px 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(68, 3, 110, 0.3);
+      }
+      table thead {
+        background-color: #0d6efd;
+        color: white;
+      }
+      table tbody tr:hover {
+        background-color: #e9f5ff;
+        cursor: default;
+      }
+      .btn-back {
+        border-radius: 25px;
+        padding: 10px 25px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    {% include '_navbar_siswa.html' %}
+
+    <br />
+    <div class="container">
+      <div class="header-section">
+        <h1 class="display-5">Riwayat Aktivitas Siswa</h1>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      <div class="table-responsive shadow-sm rounded">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th scope="col">Waktu</th>
+              <th scope="col">Aktivitas</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if logs %} {% for log in logs %}
+            <tr>
+              <td>{{ log.timestamp }}</td>
+              <td>{{ log.aktivitas }}</td>
+            </tr>
+            {% endfor %} {% else %}
+            <tr>
+              <td colspan="3" class="text-center fst-italic">Tidak ada aktivitas yang tercatat</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center mt-4 mb-5">
+        <a href="{{ url_for('dashboard_siswa') }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600"> <i class="fas fa-arrow-left"></i> Kembali </a>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm py-6 mt-10">Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>

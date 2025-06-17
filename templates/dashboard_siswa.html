@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard Siswa - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white font-sans text-gray-800">
+
+    <!-- Navbar siswa -->
+    {% include '_navbar_siswa.html' %}
+
+    <script>
+      const button = document.getElementById("menu-button");
+      const menu = document.getElementById("dropdown-menu");
+
+      button?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("hidden");
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", !expanded);
+      });
+
+      window.addEventListener("click", () => {
+        if (!menu.classList.contains("hidden")) {
+          menu.classList.add("hidden");
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+    </script>
+
+    <!-- Section utama -->
+    <section class="px-8 py-12">
+      <h2 class="text-2xl font-bold mb-6">Mata Pelajaran yang Sudah Di-Enroll</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      {% if daftar_mapel %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {% for mapel in daftar_mapel %}
+          <div class="bg-white border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+            <img src="{{ url_for('static', filename='images/' ~ (mapel.gambar if mapel.gambar else 'mapel.jpg')) }}" alt="{{ mapel.nama }}" class="w-full h-52 object-cover" />
+            <div class="p-6">
+              <h3 class="text-lg font-bold mb-2">{{ mapel.nama }}</h3>
+              <p class="text-gray-600 text-sm mb-4">{{ mapel.deskripsi }}</p>
+              <a href="{{ url_for('siswa.materi_per_mapel', mapel_id=mapel.mapel_id if mapel.mapel_id is defined else mapel.id) }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Lihat Materi</a>
+            </div>
+          </div>
+          {% endfor %}
+      {% else %}
+        <p class="text-gray-600">Kamu belum meng-enroll mata pelajaran apa pun.</p>
+      {% endif %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">
+      Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)
+    </footer>
+  </body>
+</html>

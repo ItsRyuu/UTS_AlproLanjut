@@ -1,6 +1,7 @@
+#db/conn.py
 import sqlite3
 
-DB_NAME = 'smartin_db'
+DB_NAME = 'db/smartin.db'
 
 #fungsi untuk mendapatkan koneksi ke database
 def get_connection():

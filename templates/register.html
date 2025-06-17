@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - SMARTIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="max-w-xl mx-auto mt-4 px-4">
+          {% for category, message in messages %}
+            <div class="bg-{{ 'red' if category == 'danger' else 'green' }}-100 border border-{{ 'red' if category == 'danger' else 'green' }}-400 text-{{ 'red' if category == 'danger' else 'green' }}-700 px-4 py-3 rounded relative" role="alert">
+              <span class="block sm:inline">{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center px-8 py-6 bg-white shadow-md">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-8 h-8">
+        <h1 class="font-bold text-xl">SMARTIN-AD</h1>
+      </div>
+      <div class="space-x-6 text-gray-700">
+        <a href="{{ url_for('home') }}" class="hover:text-purple-600">Home</a>
+        <a href="{{ url_for('contact') }}" class="hover:text-purple-600">Contact</a>
+        <a href="{{ url_for('logout') }}" class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700">Logout</a>
+      </div>
+    </nav>
+
+    <!-- Register Box -->
+    <div class="max-w-md mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Registrasi Akun</h2>
+      <form method="POST" action="{{ url_for('register') }}" class="space-y-4">
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+          <input type="text" name="nama" required
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" name="username" required
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" name="password" required
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Peran</label>
+          <select name="role" id="role" onchange="toggleRoleFields()" required
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+            <option value="">-- Pilih Peran --</option>
+            <option value="siswa">Siswa</option>
+            <option value="guru">Guru</option>
+          </select>
+        </div>
+
+        <!-- Siswa fields -->
+        <div id="siswa-fields" class="space-y-2 hidden">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NIS</label>
+            <input type="text" name="nis"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Kelas</label>
+            <input type="text" name="kelas"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+          </div>
+        </div>
+
+        <!-- Guru fields -->
+        <div id="guru-fields" class="space-y-2 hidden">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NIP</label>
+            <input type="text" name="nip"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Mata Pelajaran</label>
+            <select name="mapel"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 px-4 py-2">
+              <option value="">-- Pilih Mata Pelajaran --</option>
+              {% for mapel in mapel_list %}
+                <option value="{{ mapel.mapel_id }}">{{ mapel.nama_mapel }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-pink-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-pink-700">
+          Daftar
+        </button>
+
+        <div class="text-center mt-6 text-sm text-gray-600">
+          <br>
+          <a href="{{ url_for('home') }}" class="text-blue-500 hover:underline">← Kembali ke Halaman Awal</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm py-6 mt-10">
+      Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)
+    </footer>
+
+    <!-- JS Toggle -->
+    <script>
+      function toggleRoleFields() {
+        const role = document.getElementById("role").value;
+        const siswaFields = document.getElementById("siswa-fields");
+        const guruFields = document.getElementById("guru-fields");
+
+        siswaFields.classList.toggle("hidden", role !== "siswa");
+        guruFields.classList.toggle("hidden", role !== "guru");
+
+        document.querySelector("input[name='nis']").required = role === "siswa";
+        document.querySelector("input[name='kelas']").required = role === "siswa";
+        document.querySelector("input[name='nip']").required = role === "guru";
+        document.querySelector("select[name='mapel']").required = role === "guru";
+      }
+    </script>
+
+  </body>
+</html>

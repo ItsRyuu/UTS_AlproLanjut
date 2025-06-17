@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Daftar Materi - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white font-sans text-gray-800">
+    <!-- Navbar siswa -->
+    {% include '_navbar_siswa.html' %}
+
+    <!-- Script dropdown jika digunakan di navbar -->
+    <script>
+      const button = document.getElementById("menu-button");
+      const menu = document.getElementById("dropdown-menu");
+
+      button?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("hidden");
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", !expanded);
+      });
+
+      window.addEventListener("click", () => {
+        if (!menu.classList.contains("hidden")) {
+          menu.classList.add("hidden");
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+    </script>
+
+    <!-- Section utama -->
+    <section class="px-8 py-12">
+      <h2 class="text-2xl font-bold mb-6 text-purple-700">MATERI {{ mapel_info.nama_mapel if mapel_info else '-' }}</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% if materi_list %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {% for materi in materi_list %}
+        <div class="bg-white border rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
+          <img src="{{ url_for('static', filename='images/materi.jpg') }}" alt="Ilustrasi Materi" class="w-full h-40 object-cover" />
+          <div class="p-6">
+            <h3 class="text-lg font-semibold mb-2 text-black-700">{{ materi.judul }}</h3>
+
+            {% if materi.unlocked %}
+            <a href="{{ url_for('siswa.lihat_detail_materi', materi_id=materi.materi_id) }}" class="inline-block bg-purple-500 hover:bg-purple-600 text-white text-sm px-4 py-2 rounded"> Lihat Detail </a>
+            {% else %}
+            <button class="bg-gray-400 text-white text-sm px-4 py-2 rounded cursor-not-allowed" disabled>Terkunci</button>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-gray-600">Tidak ada materi untuk mata pelajaran ini.</p>
+      {% endif %}
+
+      <!-- Navigasi bawah -->
+      <div class="mt-10 flex justify-between">
+        <a href="{{ url_for('dashboard_siswa') }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">← Kembali</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>

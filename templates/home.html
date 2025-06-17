@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SMARTIN SYSTEM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white font-sans">
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center px-8 py-6 shadow-md">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-8 h-8" />
+        <h1 class="font-bold text-xl">SMARTIN-AD</h1>
+      </div>
+      <div class="space-x-6 text-gray-700">
+        <a href="{{ url_for('home') }}" class="hover:text-purple-600">Home</a>
+        <a href="{{ url_for('contact') }}" class="hover:text-purple-600">Contact</a>
+
+        {% if session.get('user') %} {% if session['user']['role'] == 'siswa' %}
+        <a href="{{ url_for('dashboard_siswa') }}" class="hover:text-purple-600">Dashboard</a>
+        {% elif session['user']['role'] == 'guru' %}
+        <a href="{{ url_for('dashboard_guru') }}" class="hover:text-purple-600">Dashboard</a>
+        {% else %}
+        <a href="{{ url_for('dashboard_admin') }}" class="hover:text-purple-600">Dashboard</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600">Logout</a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700">Login</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="flex flex-col lg:flex-row items-center justify-between px-8 py-20">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      <!-- Text Side -->
+      <div class="lg:w-1/2 space-y-6">
+        <h1 class="text-4xl font-bold text-gray-800 leading-tight">Welcome to</h1>
+        <h1 class="text-4xl font-bold text-gray-800 leading-tight">
+          <span class="text-purple-700">SMARTIN SYSTEM</span>
+        </h1>
+        <p class="text-gray-600 text-lg">Platform e-learning yang mendukung interaksi sederhana namun fungsional</p>
+
+        {% if session.get('user') and session['user']['role'] == 'admin' %}
+        <a href="{{ url_for('register') }}" class="inline-block bg-pink-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-pink-700"> Register Now </a>
+        {% endif %}
+      </div>
+
+      <!-- Image Side -->
+      <div class="lg:w-1/2 mt-12 lg:mt-0">
+        <img src="{{ url_for('static', filename='images/Pict_home.png') }}" alt="Illustration" />
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>

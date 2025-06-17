@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ 'Edit' if action == 'edit' else 'Buat' }} Soal - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <body class="bg-gray-50 text-gray-800 font-sans">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #007bff;
+        font-weight: bold;
+      }
+      .form-group label {
+        font-weight: bold;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+      }
+      .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+      }
+      .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+      }
+    </style>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Navbar -->
+    {% include '_navbar_guru.html' %}
+
+    <div class="container mt-5">
+      <h2>{{ 'Edit' if action == 'edit' else 'Buat' }} Soal</h2>
+      <form method="post">
+        <div class="form-group">
+          <label for="materi_id">Materi</label>
+          <select class="form-control" name="materi_id" id="materi_id" required>
+            {% for materi in materi_list %}
+              <option value="{{ materi.materi_id }}" {% if soal and soal.materi_id == materi.materi_id %}selected{% endif %}>{{ materi.judul }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="pertanyaan">Pertanyaan</label>
+          <textarea class="form-control" name="pertanyaan" id="pertanyaan" rows="3" required>{{ soal.pertanyaan if action == 'edit' else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="opsi_a">Opsi A</label>
+          <input type="text" class="form-control" name="opsi_a" id="opsi_a" value="{{ soal.opsi_a if action == 'edit' else '' }}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="opsi_b">Opsi B</label>
+          <input type="text" class="form-control" name="opsi_b" id="opsi_b" value="{{ soal.opsi_b if action == 'edit' else '' }}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="opsi_c">Opsi C</label>
+          <input type="text" class="form-control" name="opsi_c" id="opsi_c" value="{{ soal.opsi_c if action == 'edit' else '' }}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="opsi_d">Opsi D</label>
+          <input type="text" class="form-control" name="opsi_d" id="opsi_d" value="{{ soal.opsi_d if action == 'edit' else '' }}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="jawaban">Jawaban Benar</label>
+          <select class="form-control" name="jawaban" id="jawaban" required>
+            {% for opt in ['A', 'B', 'C', 'D'] %}
+              <option value="{{ opt }}" {% if action == 'edit' and soal.jawaban == opt %}selected{% endif %}>{{ opt }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="skor">Skor</label>
+          <input type="number" class="form-control" name="skor" id="skor" value="{{ soal.skor if action == 'edit' else 10 }}" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ 'Perbarui' if action == 'edit' else 'Simpan' }}</button>
+        <a href="{{ url_for('guru.manage_soal') }}" class="btn btn-secondary">Batal</a>
+      </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+      <!-- Footer -->
+      <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">
+        Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)
+      </footer>
+  </body>
+</html>

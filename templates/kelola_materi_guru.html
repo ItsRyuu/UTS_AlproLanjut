@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SMARTIN SYSTEM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white font-sans text-gray-800">
+    <!-- Navbar guru -->
+    {% include '_navbar_guru.html' %}
+
+    <!-- Script dropdown untuk menu navbar -->
+    <script>
+      const button = document.getElementById("menu-button");
+      const menu = document.getElementById("dropdown-menu");
+
+      button?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("hidden");
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", !expanded);
+      });
+
+      window.addEventListener("click", () => {
+        if (!menu.classList.contains("hidden")) {
+          menu.classList.add("hidden");
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+    </script>
+
+    <!-- Konten utama -->
+    <main class="px-8 py-12">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-purple-700">Kelola Materi</h2>
+        <a href="{{ url_for('guru.tambah_materi') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-full shadow-md transition duration-200">
+          + Tambah Materi
+        </a>
+      </div>
+
+      <!-- Notifikasi flash -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-6">
+          {% for category, message in messages %}
+          <div class="p-4 rounded border-l-4 shadow-sm 
+            {{ 'bg-green-50 border-green-500 text-green-700' if category == 'success' else 'bg-red-50 border-red-500 text-red-700' }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Tabel Materi -->
+      <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+        <table class="min-w-full bg-white text-sm">
+          <thead class="bg-purple-100 text-purple-800">
+            <tr>
+              <th class="px-6 py-3 text-left font-semibold uppercase tracking-wider">Judul</th>
+              <th class="px-6 py-3 text-left font-semibold uppercase tracking-wider">Deskripsi</th>
+              <th class="px-6 py-3 text-left font-semibold uppercase tracking-wider">Mata Pelajaran</th>
+              <th class="px-6 py-3 text-center font-semibold uppercase tracking-wider">Status Kunci</th>
+              <th class="px-6 py-3 text-center font-semibold uppercase tracking-wider">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for m in materi %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-gray-900 font-medium">{{ m.judul }}</td>
+              <td class="px-6 py-4 text-gray-700">{{ m.deskripsi }}</td>
+              <td class="px-6 py-4 text-gray-700">{{ m.nama_mapel }}</td>
+              <td class="px-6 py-4 text-center">
+                <!-- UI Switch yang Diperbarui dengan logika Jinja2 -->
+                <form method="POST" action="{{ url_for('guru.toggle_lock_materi', materi_id=m.materi_id) }}">
+                  <label for="toggle-{{ m.materi_id }}" class="flex items-center justify-center cursor-pointer">
+                    <div class="relative">
+                      <input type="hidden" name="is_locked" value="0">
+                      <input type="checkbox" id="toggle-{{ m.materi_id }}" name="is_locked" value="1" class="sr-only peer" onchange="this.form.submit()" {% if m.is_locked %}checked{% endif %}>
+                      
+                      <!-- Latar belakang switch (track) -->
+                      <div class="block w-14 h-8 rounded-full transition-all duration-300 {% if m.is_locked %}bg-red-500{% else %}bg-green-500{% endif %}"></div>
+                      
+                      <!-- Tombol geser (dot) dengan ikon di dalamnya -->
+                      <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-all duration-300 peer-checked:translate-x-full flex items-center justify-center">
+                        {% if m.is_locked %}
+                          <!-- Ikon Gembok Terkunci (merah) -->
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-red-500" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                          </svg>
+                        {% else %}
+                          <!-- Ikon Gembok Terbuka (hijau) -->
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-green-500" viewBox="0 0 16 16">
+                            <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/>
+                          </svg>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <!-- Label Teks -->
+                    <div class="ml-3 text-gray-700 font-medium hidden sm:block">
+                      {% if m.is_locked %}
+                        Terkunci
+                      {% else %}
+                        Terbuka
+                      {% endif %}
+                    </div>
+                  </label>
+                </form>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <a href="{{ url_for('guru.edit_materi', materi_id=m.materi_id) }}" class="text-blue-600 hover:text-blue-800 font-semibold mr-4">Edit</a>
+                <form method="POST" action="{{ url_for('guru.hapus_materi', materi_id=m.materi_id) }}" class="inline" onsubmit="return confirm('Yakin ingin menghapus materi ini?');">
+                  <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">Hapus</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5" class="px-6 py-4 text-center text-gray-500 italic">Belum ada materi yang tersedia.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tombol Kembali -->
+      <div class="mt-10 text-center">
+        <a href="{{ url_for('guru.dashboard_guru_view') }}" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded shadow-md transition duration-200">
+          ← Kembali
+        </a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm mt-12">
+      Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)
+    </footer>
+  </body>
+</html>

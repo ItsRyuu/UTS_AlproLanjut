@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Materi Pelajaran - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .youtube-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      }
+      .youtube-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      /* Custom styles for decorative circles */
+      .decorative-circle-tl {
+        position: absolute;
+        top: -50px;
+        left: -50px;
+        width: 150px;
+        height: 150px;
+        background-color: rgba(250, 204, 21, 0.1); /* Light yellow, low opacity */
+        border-radius: 50%;
+        z-index: 0;
+      }
+      .decorative-circle-br {
+        position: absolute;
+        bottom: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        background-color: rgba(236, 72, 153, 0.1); /* Light pink, low opacity */
+        border-radius: 50%;
+        z-index: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-gray-800">
+    {% include '_navbar_siswa.html' %}
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      <div class="decorative-circle-tl hidden md:block"></div>
+      <div class="decorative-circle-br hidden md:block"></div>
+
+      <div class="bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-xl relative z-10">
+        <nav class="mb-6 text-sm text-gray-500" aria-label="Breadcrumb">
+          <ol class="list-none p-0 inline-flex">
+            <li class="flex items-center">
+              <a href="{{ url_for('dashboard_siswa') }}" class="hover:text-purple-600">Dashboard</a>
+              <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path
+                  d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"
+                />
+              </svg>
+            </li>
+            <li class="flex items-center">
+              <span class="text-gray-700">{{ materi.judul }}</span>
+            </li>
+          </ol>
+        </nav>
+
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{{ materi.judul }}</h1>
+
+        <article class="prose prose-lg max-w-none text-gray-700 mb-8">{{ materi.deskripsi | safe }}</article>
+
+        <div class="mb-10">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Video Materi</h2>
+          <div class="youtube-container rounded-lg shadow-lg overflow-hidden">
+            <iframe src="{{ materi.video_url }}" title="Video Materi - {{ materi.judul }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen> </iframe>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <a href="{{ url_for('siswa.materi_per_mapel', mapel_id=materi.mapel_id) }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 text-center transition duration-150">
+            <i class="fas fa-arrow-left ml-2"></i> Kembali
+          </a>
+          <a
+            href="{{ url_for('kerjakan_soal', materi_id=materi.materi_id) }}"
+            class="w-full sm:w-auto order-1 sm:order-2 text-white bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-8 py-3 text-center transition duration-150"
+          >
+            Quiz {{ materi.judul }} <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-gray-100 text-center text-gray-600 py-6 text-sm mt-12">Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>

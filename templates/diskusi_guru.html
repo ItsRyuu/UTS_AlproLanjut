@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diskusi Guru - SMARTIN-AD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfcfb;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      main {
+        flex-grow: 1;
+      }
+      .nav-link {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem; /* rounded-md */
+        transition: background-color 0.3s, color 0.3s;
+        color: #4b5563; /* text-gray-600 */
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background-color: #f3f4f6; /* bg-gray-100 */
+        color: #1f2937; /* text-gray-800 */
+      }
+      .nav-link.active {
+        background-color: #facc15; /* bg-yellow-400 */
+        color: #422006; /* text-yellow-900 */
+        font-weight: 600;
+      }
+      .user-menu-btn {
+        background-color: #8b5cf6; /* bg-purple-500 */
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem; /* rounded-lg */
+        font-weight: 600;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+      }
+      .user-menu-btn:hover {
+        background-color: #7c3aed; /* bg-purple-600 */
+      }
+      .user-menu-btn svg {
+        margin-left: 0.5rem; /* ml-2 */
+        width: 1rem; /* w-4 */
+        height: 1rem; /* h-4 */
+      }
+      .form-textarea {
+        border: 2px solid #000000; /* border-2 border-black */
+        border-radius: 0.5rem; /* rounded-lg */
+        padding: 0.75rem 1rem; /* p-3 px-4 */
+        width: 100%;
+        background-color: #f3f0ff; /* bg-purple-50 (custom) */
+        transition: border-color 0.3s;
+        min-height: 120px; /* Sesuaikan tinggi minimal */
+      }
+      .form-textarea:focus {
+        outline: none;
+        border-color: #8b5cf6; /* focus:border-purple-500 */
+      }
+      .btn-submit-custom {
+        background-color: #ec4899; /* bg-pink-500 */
+        color: white;
+        padding: 0.625rem 1.5rem; /* py-2.5 px-6 */
+        border-radius: 0.5rem; /* rounded-lg */
+        font-weight: 700; /* font-bold */
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: background-color 0.3s;
+        border: none;
+      }
+      .btn-submit-custom:hover {
+        background-color: #db2777; /* hover:bg-pink-600 */
+      }
+      .btn-secondary-custom {
+        background-color: #6b7280; /* bg-gray-500 */
+        color: white;
+        padding: 0.625rem 1.5rem; /* py-2.5 px-6 */
+        border-radius: 0.5rem; /* rounded-lg */
+        font-weight: 600;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-secondary-custom:hover {
+        background-color: #4b5563; /* hover:bg-gray-600 */
+      }
+      .footer-text {
+        color: #6b7280; /* text-gray-500 */
+        font-size: 0.875rem; /* text-sm */
+      }
+      .background-shape-discussion {
+        position: absolute;
+        top: 80px; /* Sesuaikan posisi */
+        right: -80px; /* Sesuaikan posisi */
+        width: 450px; /* Sesuaikan ukuran */
+        height: 600px; /* Sesuaikan ukuran */
+        background-image: url("data:image/svg+xml,%3Csvg width='450' height='600' viewBox='0 0 450 600' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M450 0C450 0 225 50 225 300C225 550 450 600 450 600V0Z' fill='%23FEF9C3' fill-opacity='0.4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+        z-index: -1;
+        opacity: 0.7;
+      }
+      /* Styling untuk Flash Messages menggunakan Tailwind */
+      .alert-container {
+        position: fixed;
+        top: 1.25rem; /* 20px */
+        right: 1.25rem; /* 20px */
+        z-index: 50;
+        width: auto;
+        max-width: 90%;
+      }
+      .alert-custom {
+        padding: 1rem; /* p-4 */
+        margin-bottom: 1rem; /* mb-4 */
+        border-radius: 0.375rem; /* rounded-md */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+      }
+      .alert-custom button {
+        background: none;
+        border: none;
+        font-size: 1.5rem; /* text-2xl */
+        line-height: 1;
+        color: inherit;
+        opacity: 0.7;
+        cursor: pointer;
+      }
+      .alert-custom button:hover {
+        opacity: 1;
+      }
+      .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #6ee7b7;
+      }
+      .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+      }
+      .alert-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fcd34d;
+      }
+      .alert-info {
+        background-color: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #93c5fd;
+      }
+
+      @media (max-width: 768px) {
+        .background-shape-discussion {
+          display: none;
+        }
+        .nav-links-container {
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+          margin-top: 1rem;
+        }
+        .header-container {
+          flex-direction: column;
+          align-items: center;
+        }
+        .main-content-container {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    <div class="alert-container">
+      {% for category, message in messages %}
+      <div class="alert-custom alert-{{ category }} js-alert-dismissible" role="alert">
+        <span>{{ message }}</span>
+        <button type="button" aria-label="Close" onclick="this.parentElement.style.display='none';">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    {% include '_navbar_guru.html' %}
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 relative main-content-container">
+      <div class="background-shape-discussion"></div>
+      <div class="max-w-3xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-lg relative z-10">
+
+        {% if questions %} {% for question in questions %}
+        <div class="mb-8 pb-8 border-b border-gray-200 last:border-b-0 last:pb-0 last:mb-0">
+          <h2 class="text-xl font-semibold text-gray-800 mb-2">Pertanyaan Siswa</h2>
+          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+            <p class="text-sm text-gray-500 mb-1"><strong>Pertanyaan dari :</strong> {{ question.nama_siswa if question.nama_siswa else 'Siswa' }}</p>
+            {# Changed to show logged-in user name like in diskusi_siswa.html #}
+            <p class="text-gray-700">{{ question.text }}</p>
+          </div>
+
+          <h3 class="text-lg font-semibold text-gray-800 mb-2 mt-4">Jawaban</h3>
+          {% if question.jawaban %}
+          <div class="bg-purple-50 p-4 rounded-lg mb-4">
+            <p class="text-sm text-gray-500 mb-1"><strong>Jawaban dari:</strong> {{ question.nama_guru if question.nama_guru else user.nama }}</p>
+            <p class="text-gray-700">{{ question.jawaban }}</p>
+          </div>
+          {% else %}
+          <form method="POST" action="{{ url_for('guru.diskusi_guru') }}" class="mt-2">
+            <input type="hidden" name="question_id" value="{{ question.id }}" />
+            <textarea name="answer" class="form-textarea mb-3" placeholder="Tuliskan jawaban mengenai pertanyaan siswa" required></textarea>
+            <button type="submit" class="btn-submit-custom">KIRIM</button>
+          </form>
+          {% endif %}
+        </div>
+        {% endfor %} {% else %}
+        <div class="text-center py-8">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          </svg>
+          <h3 class="mt-2 text-lg font-medium text-gray-900">Belum ada pertanyaan</h3>
+          <p class="mt-1 text-sm text-gray-500">Saat ini belum ada pertanyaan dari siswa.</p>
+        </div>
+        {% endif %}
+
+        <div class="mt-8 text-center">
+          <a href="{{ url_for('guru.dashboard_guru_view') }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Kembali</a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-gray-100 py-6 mt-auto">
+      <div class="container mx-auto text-center">
+        <p class="footer-text">created by : Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)</p>
+      </div>
+    </footer>
+
+    <script>
+      // Script sederhana untuk menutup alert
+      document.querySelectorAll(".js-alert-dismissible button").forEach((button) => {
+        button.addEventListener("click", function () {
+          this.parentElement.style.display = "none";
+        });
+      });
+
+      // Optional: Script untuk dropdown user (jika diaktifkan)
+      const userMenuButton = document.querySelector(".user-menu-btn");
+      if (userMenuButton) {
+        const userMenuDropdown = userMenuButton.nextElementSibling;
+        userMenuButton.addEventListener("click", () => {
+          userMenuDropdown.classList.toggle("hidden");
+        });
+        // Close dropdown if clicking outside
+        window.addEventListener("click", function (e) {
+          if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+            userMenuDropdown.classList.add("hidden");
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

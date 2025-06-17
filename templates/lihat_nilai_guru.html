@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lihat Nilai Siswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    {# Hanya Bootstrap 5 CSS #} {# Bootstrap 5 JS akan dimuat di akhir body #}
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .nav_container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+      }
+      h1 {
+        color: #000000;
+        font-weight: bold;
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+      }
+      th {
+        background-color: #850ee6;
+        color: white;
+        font-weight: bold;
+      }
+      td {
+        background-color: #f1f1f1;
+      }
+      td[colspan="2"] {
+        text-align: center;
+        background-color: #f0f0f0;
+      }
+      .btn-secondary {
+        background-color: #f62dfd;
+        border-color: #5c0354;
+      }
+      .btn-secondary:hover {
+        background-color: #b8178f;
+        border-color: #a11696;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %} {% include '_navbar_guru.html' %}
+
+    <div class="container mt-5">
+      <h1 class="text-xl font-semibold mb-6 text-gray-800">Lihat Nilai Siswa</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nama Siswa</th>
+            <th>NIS</th>
+            <th>Kelas</th>
+            <th>Skor Mapel (Diperoleh / Maksimal)</th>
+            <th>Indeks Mapel</th>
+            <th>Rincian Materi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student_item in nilai_siswa_list %}
+          <tr>
+            <td>{{ student_item.nama_siswa }}</td>
+            <td>{{ student_item.nis }}</td>
+            <td>{{ student_item.kelas }}</td>
+            <td>{{ student_item.skor_diperoleh_mapel }} / {{ student_item.skor_maksimal_mapel }}</td>
+            <td>{{ student_item.indeks_mapel }}</td>
+            <td>
+              {% if student_item.materi_details %}
+              <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalRincianSiswa-{{ student_item.nis }}">Lihat Rincian</button>
+              {% else %} N/A {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Modal Structure (di luar tabel utama, tapi di-generate dalam loop siswa jika perlu data unik) -->
+      {% for student_item in nilai_siswa_list %} {% if student_item.materi_details %}
+      <div class="modal fade" id="modalRincianSiswa-{{ student_item.nis }}" tabindex="-1" aria-labelledby="modalRincianSiswaLabel-{{ student_item.nis }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title text-xl font-semibold" id="modalRincianSiswaLabel-{{ student_item.nis }}">Rincian Materi untuk {{ student_item.nama_siswa }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-sm table-bordered table-striped">
+                <thead class="bg-secondary text-white">
+                  <tr>
+                    <th>Materi</th>
+                    <th>Skor Diperoleh</th>
+                    <th>Skor Maksimal</th>
+                    <th>Indeks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for md in student_item.materi_details %}
+                  <tr>
+                    <td>{{ md.nama_materi }}</td>
+                    <td>{{ md.skor_diperoleh_materi }}</td>
+                    <td>{{ md.skor_maksimal_materi }}</td>
+                    <td>{{ md.indeks_materi }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% endfor %}
+
+      <div class="text-center mt-4">
+        <a href="{{ url_for('guru.dashboard_guru_view') }}" class="inline-block bg-pink-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-pink-700">Kembali</a>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle (termasuk Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {# Menghapus script JavaScript untuk collapse karena tidak lagi digunakan #}
+
+    <br /><br /><br /><br /><br /><br /><br />
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>

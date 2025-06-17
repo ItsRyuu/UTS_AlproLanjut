@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SMARTIN SYSTEM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white font-sans">
+    {% include '_navbar_guru.html' %}
+
+    <script>
+      const button = document.getElementById("menu-button");
+      const menu = document.getElementById("dropdown-menu");
+
+      button.addEventListener("click", (e) => {
+        e.stopPropagation(); // supaya event tidak bubble ke window
+        menu.classList.toggle("hidden");
+        // toggle aria-expanded untuk aksesibilitas
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", !expanded);
+      });
+
+      // tutup dropdown jika klik di luar
+      window.addEventListener("click", () => {
+        if (!menu.classList.contains("hidden")) {
+          menu.classList.add("hidden");
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+    </script>
+
+    <!-- Main Content: Manajemen Soal dan Materi -->
+    <section class="px-8 py-12">
+      <h2 class="text-xl font-semibold mb-6 text-gray-800">Manajemen Soal dan Materi</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Kartu Kelola Materi -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <img src="{{ url_for('static', filename='images/materi_pict.png') }}" alt="Kelola Materi" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-lg font-bold mb-2 text-gray-800">Kelola Materi</h3>
+            <p class="text-gray-600 text-sm mb-4">Kelola materi yang akan disajikan kepada siswa melalui e-learning SMARTIN</p>
+            <a href="{{ url_for('guru.kelola_materi') }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Kelola Materi</a>
+          </div>
+        </div>
+
+        <!-- Kartu Kelola Soal -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <img src="{{ url_for('static', filename='images/quiz_pict.png') }}" alt="Kelola Soal" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-lg font-bold mb-2 text-gray-800">Kelola Soal</h3>
+            <p class="text-gray-600 text-sm mb-4">Kelola soal-soal yang akan dikerjakan oleh siswa melalui e-learning SMARTIN</p>
+            <a href="{{ url_for('guru.manage_soal') }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Kelola Soal</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <br /><br /><br />
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>

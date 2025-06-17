@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Riwayat Aktivitas - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a2e0a1c6e8.js" crossorigin="anonymous"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+
+    <!-- Navbar -->
+    {% include '_navbar_guru.html' %}
+
+    <!-- Header -->
+    <div class="max-w-4xl mx-auto mt-8 bg-purple-700 text-white py-6 px-8 rounded-lg shadow-lg text-center">
+      <h1 class="text-3xl font-bold">Riwayat Aktivitas Siswa</h1>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="max-w-3xl mx-auto mt-6 space-y-4">
+      {% for category, message in messages %}
+      <div
+        class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700
+                             {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700
+                             {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700
+                             {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700
+                             {% endif %}"
+        role="alert"
+      >
+        <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+        <p>{{ message }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Tabel Aktivitas -->
+    <div class="max-w-5xl mx-auto mt-8 bg-white shadow-md rounded-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto text-sm">
+          <caption class="text-left text-gray-600 italic px-6 pt-4 pb-2">Daftar aktivitas siswa yang tercatat dalam sistem</caption>
+          <thead class="bg-purple-600 text-white">
+            <tr>
+              <th class="text-left px-6 py-3">Waktu</th>
+              <th class="text-left px-6 py-3">Aktivitas</th>
+              <th class="text-left px-6 py-3">Nama Siswa</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if logs %}
+              {% for log in logs %}
+              <tr class="hover:bg-purple-50">
+                <td class="px-6 py-3 border-t">{{ log.timestamp }}</td>
+                <td class="px-6 py-3 border-t">{{ log.aktivitas }}</td>
+                <td class="px-6 py-3 border-t">{{ log.nama_siswa }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="3" class="px-6 py-4 text-center italic text-gray-500 border-t">Tidak ada aktivitas yang tercatat</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tombol kembali -->
+    <div class="text-center mt-8">
+      <a href="{{ url_for('dashboard_guru') }}"
+         class="inline-flex items-center bg-pink-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-pink-700 transition duration-300">
+        <i class="fas fa-arrow-left mr-2"></i> Kembali ke Dashboard
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm py-6 mt-10">
+      Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>SMARTIN SYSTEM</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <style>
+            body {
+            background-color: #f8f9fa;
+            color: #343a40;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin-top: 50px;
+            }
+            label {
+            font-weight: 600;
+            }
+            .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            }
+            .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            }
+            .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            }
+            .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            }
+        </style>
+
+    </head>
+    <body class="bg-white font-sans">
+        {% include '_navbar_guru.html' %}
+
+        <script>
+        const button = document.getElementById('menu-button');
+        const menu = document.getElementById('dropdown-menu');
+
+        button.addEventListener('click', (e) => {
+            // supaya event tidak bubble ke window
+            e.stopPropagation(); 
+            menu.classList.toggle('hidden');
+            // toggle aria-expanded untuk aksesibilitas
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', !expanded);
+        });
+
+        // tutup dropdown jika klik di luar
+        window.addEventListener('click', () => {
+            if (!menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+            button.setAttribute('aria-expanded', 'false');
+            }
+        });
+        </script>
+
+        <!-- Main Content-->
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+            <div class="mb-6">
+            {% for category, message in messages %}
+                <div
+                    class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+                    role="alert"
+                >
+                    <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+            </div>
+            {% endif %} {% endwith %}
+            <h3 style="font-size: 3rem; color: #6f10a7; font-weight: bold; text-align: center; margin-bottom: 30px;"></h3style>Tambah Materi</h2>
+            <form method="POST" action="{{ url_for('guru.tambah_materi') }}">
+            <div class="form-group">
+                <label for="judul">Judul Materi <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan judul materi" required>
+            </div>
+
+            <div class="form-group">
+                <label for="deskripsi">Deskripsi</label>
+                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="5" placeholder="Deskripsikan materi secara singkat"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="video_url">Video Pembelajaran (URL)</label>
+                <input type="url" class="form-control" id="video_url" name="video_url" placeholder="Masukkan URL video pembelajaran, misal YouTube">
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('guru.kelola_materi') }}" class="btn btn-secondary">Batal</a>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Footer -->
+        <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">
+            Created by: Andre Rangga Gintara (2102574) &amp; Dwi Novia Al Husaeni (2102211)
+        </footer>
+    </body>
+</html>

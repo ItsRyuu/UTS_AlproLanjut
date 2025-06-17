@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mengerjakan Soal - {{ materi['judul'] }} - SMARTIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .decorative-circle-tl {
+        position: absolute;
+        top: -50px;
+        left: -50px;
+        width: 150px;
+        height: 150px;
+        background-color: rgba(79, 70, 229, 0.05);
+        border-radius: 50%;
+        z-index: 0;
+      }
+      .decorative-circle-br {
+        position: absolute;
+        bottom: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        background-color: rgba(236, 72, 153, 0.05);
+        border-radius: 50%;
+        z-index: 0;
+      }
+      input[type="radio"]:focus {
+        --tw-ring-color: rgb(168 85 247 / var(--tw-ring-opacity));
+      }
+      input[type="radio"]:checked {
+        background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+        background-color: #8b5cf6;
+        border-color: #8b5cf6;
+      }
+    </style>
+  </head>
+
+  <body class="bg-slate-100 text-gray-800">
+    {% include '_navbar_siswa.html' %}
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
+      <div class="decorative-circle-tl hidden md:block"></div>
+      <div class="decorative-circle-br hidden md:block"></div>
+
+      <div class="bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-2xl relative z-10">
+        <nav class="mb-6 text-sm text-gray-500" aria-label="Breadcrumb">
+          <ol class="list-none p-0 inline-flex">
+            <li class="flex items-center">
+              <a href="{{ url_for('dashboard_siswa') }}" class="hover:text-purple-600 transition-colors">Dashboard</a>
+              <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path
+                  d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"
+                />
+              </svg>
+            </li>
+            <li class="flex items-center">
+              <span class="text-gray-700">{{ nama_mapel }}</span>
+              <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path
+                  d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"
+                />
+              </svg>
+            </li>
+            <li><span class="text-gray-400">Kerjakan Soal</span></li>
+          </ol>
+        </nav>
+
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Kerjakan Soal: {{ materi['judul'] }}</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <div class="mb-6">
+            {% for category, message in messages %}
+            <div class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}" role="alert">
+              <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+              <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+          {% for soal in soal_list %}
+          <div class="mb-10 p-6 bg-slate-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <p class="text-lg sm:text-xl font-semibold text-gray-800 mb-5"><span class="text-purple-600 font-bold">Soal {{ loop.index }}:</span> {{ soal.pertanyaan }}</p>
+            <div class="space-y-3">
+              {% set options = [('A', soal.opsi_a), ('B', soal.opsi_b), ('C', soal.opsi_c), ('D', soal.opsi_d)] %}
+              {% for value, label in options %}
+              <label
+                for="jawaban_{{ soal.soal_id }}_{{ value }}"
+                class="flex items-center p-3 sm:p-4 border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-500 transition-all duration-200 cursor-pointer has-[:checked]:bg-purple-100 has-[:checked]:border-purple-600 has-[:checked]:ring-2 has-[:checked]:ring-purple-500"
+              >
+                <input type="radio" id="jawaban_{{ soal.soal_id }}_{{ value }}" name="jawaban_{{ soal.soal_id }}" value="{{ value }}" class="form-radio h-5 w-5 text-purple-600 focus:ring-purple-500 focus:ring-offset-0" required />
+                <span class="ml-4 text-gray-700 text-base">{{ value }}. {{ label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+
+          {% if soal_list %}
+          <div class="mt-10 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <a
+              href="{{ url_for('siswa.lihat_detail_materi', materi_id=materi.materi_id) }}"
+              class="w-full sm:w-auto order-1 sm:order-2 text-white bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-base px-8 py-3 text-center transition duration-150"
+            >
+              Kembali
+            </a>
+            <button
+              type="submit"
+              class="w-full sm:w-auto order-1 sm:order-2 text-white bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-base px-8 py-3 text-center transition duration-150">
+              Kirim Jawaban <i class="fas fa-paper-plane ml-2"></i>
+            </button>
+          </div>
+          {% else %}
+          <div class="text-center py-8">
+            <p class="text-gray-600 text-xl mb-4">Tidak ada soal yang tersedia untuk mata pelajaran ini saat ini.</p>
+            <a
+              href="{{ url_for('siswa.lihat_detail_materi', materi_id=materi.materi_id) }}"
+              class="w-full sm:w-auto order-1 sm:order-2 text-white bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-base px-8 py-3 text-center transition duration-150">
+              Kembali ke Detail Materi
+            </a>
+          </div>
+          {% endif %}
+        </form>
+
+        {% if materi_selanjutnya %}
+        <div class="mt-10 text-center">
+          <a
+            href="{{ url_for('siswa.lihat_detail_materi', materi_id=materi_selanjutnya.materi_id) }}"
+            class="inline-block text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-base px-8 py-3 transition duration-150"
+          >
+            Lanjut ke Materi Selanjutnya <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+
+    <footer class="bg-gray-200 text-center text-gray-600 py-6 text-sm mt-16">
+      Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)
+    </footer>
+  </body>
+</html>

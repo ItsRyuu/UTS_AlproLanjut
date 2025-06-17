@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil Guru - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .form-container {
+        max-width: 650px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .profile-header {
+        background: linear-gradient(to right, #9342d6, #941dcc);
+        color: white;
+        padding: 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+        margin: -30px -30px 30px -30px;
+      }
+
+      .profile-header h2 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .profile-header i {
+        font-size: 24px;
+        margin-right: 10px;
+      }
+
+      .btn-group-custom {
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Navbar -->
+    {% include '_navbar_guru.html' %}
+
+    <div class="container form-container">
+      <div class="profile-header">
+        <h2><i class="fas fa-user-circle"></i> Profil Guru</h2>
+      </div>
+
+      <form method="post">
+        <div class="form-group">
+          <label for="nama">Nama</label>
+          <input type="text" id="nama" name="nama" class="form-control" value="{{ user.nama }}" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="text" id="email" class="form-control" value="{{ user.email }}" disabled />
+        </div>
+        <div class="form-group">
+          <label for="mapel">Mata Pelajaran</label>
+          <input type="text" id="mapel" class="form-control" value="{{ user.nama_mapel }}" disabled />
+        </div>
+        <div class="form-group">
+          <label for="password">Password Baru (opsional)</label>
+          <input type="password" id="password" name="password" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="konfirmasi_password">Konfirmasi Password Baru</label>
+          <input type="password" id="konfirmasi_password" name="konfirmasi_password" class="form-control" />
+        </div>
+        <div class="btn-group-custom">
+          <a href="{{ url_for('guru.dashboard_guru_view') }}" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">← Kembali</a>
+          <button type="submit" class="inline-block bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bootstrap & Font Awesome -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm">
+      Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)
+    </footer>
+  </body>
+</html>

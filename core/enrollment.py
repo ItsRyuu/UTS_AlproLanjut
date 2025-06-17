@@ -5,48 +5,54 @@ def enroll_mapel(siswa_id):
     try:
         cursor = conn.execute("SELECT siswa_id FROM siswa WHERE siswa_id = ?", (siswa_id,))
         if not cursor.fetchone():
-            print("Data siswa tidak valid")
-            return
-        while True:
-            cursor = conn.execute("""
-                SELECT m.mapel_id, m.nama_mapel 
-                FROM mapel m
-                WHERE NOT EXISTS (
-                    SELECT 1 FROM enrollment e 
-                    WHERE e.mapel_id = m.mapel_id 
-                    AND e.siswa_id = ?
-                )""", (siswa_id,))
-            
-            mapel_list = cursor.fetchall()
-            
-            if not mapel_list:
-                print("\nTidak ada mata pelajaran tersedia untuk di-enroll")
-                return
+            raise ValueError("Data siswa tidak valid")
 
-            print("\n=== ENROLL MATA PELAJARAN ===")
-            print("0. Kembali ke Menu Utama")
-            for idx, mapel in enumerate(mapel_list, 1):
-                print(f"{idx}. {mapel['nama_mapel']}")
+        cursor = conn.execute("""
+            SELECT m.mapel_id, m.nama_mapel
+            FROM mapel m
+            WHERE NOT EXISTS (
+                SELECT 1 FROM enrollment e
+                WHERE e.mapel_id = m.mapel_id
+                AND e.siswa_id = ?
+            )
+        """, (siswa_id,))
+        
+        mapel_list = cursor.fetchall()
 
-            pilihan = input("\nPilih mata pelajaran (0 untuk kembali): ")
-            if pilihan == '0':
-                return
-            
-            try:
-                pilihan = int(pilihan) - 1
-                if pilihan < 0 or pilihan >= len(mapel_list):
-                    raise ValueError
-                
-                mapel_id = mapel_list[pilihan]['mapel_id']
-                conn.execute("INSERT INTO enrollment VALUES (NULL, ?, ?)", (mapel_id, siswa_id))
-                conn.commit()
-                print("\nBerhasil enroll mata pelajaran!")
-                return
-                
-            except (ValueError, IndexError):
-                print("\nPilihan tidak valid!")
-                
+        if not mapel_list:
+            raise ValueError("Tidak ada mata pelajaran tersedia untuk di-enroll")
+
+        return mapel_list  # Mengembalikan daftar mata pelajaran yang tersedia
+
     except Exception as e:
-        print(f"\nGagal enroll: {e}")
+        print(f"Error: {e}")
+        return None
+    finally:
+        conn.close()
+
+def enroll_siswa(mapel_id, siswa_id):
+    conn = get_connection()
+    try:
+        # Menambahkan enrollment baru
+        conn.execute("INSERT INTO enrollment (mapel_id, siswa_id) VALUES (?, ?)", (mapel_id, siswa_id))
+        conn.commit()
+    except Exception as e:
+        print(f"Error enrolling siswa: {e}")
+    finally:
+        conn.close()
+
+def get_enrolled_mapel(siswa_id):
+    conn = get_connection()
+    try:
+        cursor = conn.execute("""
+            SELECT m.mapel_id, m.nama_mapel
+            FROM mapel m
+            JOIN enrollment e ON m.mapel_id = e.mapel_id
+            WHERE e.siswa_id = ?
+        """, (siswa_id,))
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error getting enrolled mapel: {e}")
+        return None
     finally:
         conn.close()

@@ -1,0 +1,59 @@
+<nav class="flex justify-between items-center px-8 py-6 shadow-md">
+  <div class="flex items-center gap-2">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-8 h-8" />
+    <h1 class="font-bold text-xl">SMARTIN-AD</h1>
+  </div>
+
+  <div class="space-x-6 text-gray-700 flex items-center gap-4">
+    <a href="{{ url_for('home') }}" class="hover:text-purple-600">Home</a>
+    <a href="{{ url_for('dashboard_guru') }}" class="hover:text-purple-600">Dashboard</a>
+    <a href="{{ url_for('guru.lihat_nilai_guru') }}" class="hover:text-purple-600">Lihat Nilai Siswa</a>
+    <a href="{{ url_for('guru.diskusi_guru') }}" class="hover:text-purple-600">Forum Diskusi</a>
+
+    <!-- Dropdown Profil Guru -->
+    <div class="relative inline-block text-left">
+      <button
+        id="menu-button"
+        aria-expanded="false"
+        aria-haspopup="true"
+        class="inline-flex justify-center w-full rounded-full bg-purple-600 px-4 py-2 text-white text-sm font-medium hover:bg-purple-700 focus:outline-none"
+        type="button"
+      >
+        <a> {{ session['user']['nama'] }}</a>
+        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Dropdown menu -->
+      <div id="dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+        <div class="py-1" role="none">
+          <a href="{{ url_for('guru.profil_guru', nama_guru=session['user']['nama']) }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem" tabindex="-1">Lihat Profil</a>
+          <a href="{{ url_for('log_aktivitas_page') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem" tabindex="-1">Log Aktivitas</a>
+          <a href="{{ url_for('logout') }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem" tabindex="-1">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const button = document.getElementById("menu-button");
+  const menu = document.getElementById("dropdown-menu");
+
+  button.addEventListener("click", (e) => {
+    e.stopPropagation(); // supaya event tidak bubble ke window
+    menu.classList.toggle("hidden");
+    // toggle aria-expanded untuk aksesibilitas
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", !expanded);
+  });
+
+  // tutup dropdown jika klik di luar
+  window.addEventListener("click", () => {
+    if (!menu.classList.contains("hidden")) {
+      menu.classList.add("hidden");
+      button.setAttribute("aria-expanded", "false");
+    }
+  });
+</script>

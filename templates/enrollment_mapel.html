@@ -1,0 +1,56 @@
+<!-- templates/enrollment_mapel.html -->
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Enroll Mata Pelajaran - SMARTIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white text-gray-800 font-sans">
+    <!-- Navbar siswa -->
+    {% include '_navbar_siswa.html' %}
+
+    <section class="px-8 py-12 max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold mb-6 text-center">Enroll Mata Pelajaran</h2>
+
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      <div class="mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-4 rounded-md {% if category == 'success' %} bg-green-100 border-l-4 border-green-500 text-green-700 {% elif category == 'error' %} bg-red-100 border-l-4 border-red-500 text-red-700 {% elif category == 'warning' %} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 {% else %} bg-blue-100 border-l-4 border-blue-500 text-blue-700 {% endif %}"
+          role="alert"
+        >
+          <p class="font-bold capitalize">{{ category if category != 'message' else 'Info' }}</p>
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+
+      <form method="POST">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {% for mapel in mapel_list %}
+          <div class="border rounded-lg shadow hover:shadow-lg transition overflow-hidden bg-white">
+            <label for="mapel_{{ mapel.mapel_id }}" class="block cursor-pointer">
+              <img src="{{ url_for('static', filename='images/' ~ (mapel.gambar if mapel.gambar else 'enroll.jpg')) }}" alt="{{ mapel.nama_mapel }}" class="w-full h-48 object-cover" />
+              <div class="p-4 flex items-center">
+                <input type="checkbox" name="mapel_id" value="{{ mapel.mapel_id }}" id="mapel_{{ mapel.mapel_id }}" class="w-5 h-5 mr-3 text-pink-500 focus:ring-pink-400" />
+                <span class="text-lg font-semibold">{{ mapel.nama_mapel }}</span>
+              </div>
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="flex flex-wrap justify-between items-center mt-10 gap-4">
+          <button type="submit" class="bg-pink-500 text-white px-6 py-2 rounded hover:bg-pink-600 transition">Enroll Sekarang</button>
+          <a href="{{ url_for('dashboard_siswa') }}" class="bg-pink-500 text-white px-6 py-2 rounded hover:bg-pink-600 transition"> ← Kembali </a>
+        </div>
+      </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 text-sm mt-12">Created by: Andre Rangga Gintara (2102574) & Dwi Novia Al Husaeni (2102211)</footer>
+  </body>
+</html>
